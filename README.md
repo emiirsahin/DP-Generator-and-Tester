@@ -13,6 +13,7 @@ This program is the DP implementation of a given student; in our submission this
 * The sensitivity values for the different query operations
 * The epsilon value
 * How the noise is added to the data
+
 The distribution by default is the Laplace distribution. The closest distribution to the Laplace distribution is the Gaussian distribution which is the best possible choice for an incorrect DP implementation, since the noise values drawn from the Gaussian distribution are the closest to the correct noise values while still being an incorrect implementation. If the noise values are chosen from another distribution or if the implementation is incorrect to such a degree that the noise values are not drawn from a distribution at all, the error will be much more apparent.
 The sensitivity values can be modified to obtain an incorrect DP implementation. If the sensitivity values are calculated wrong or set statically, the tester program will detect this error since the tester program is randomized, this is also the case for the epsilon value, the DP program by default receives the epsilon value from the tester program but it can be changed manually within the DP program to see the effect of a wrong epsilon value on the tester programs ability to detect it.
 The addition of noise is very straightforward, but it is technically another angle in which the DP implementation can be wrong.
@@ -24,6 +25,7 @@ This program generates a dataset given the number of rows and the column specifi
 * Float with uniform distribution with a minimum and a maximum value
 * Float with normal distribution with a mean and a standard deviation
 * String chosen from a provided list of strings uniformly
+
 Since the objective of this program is simply to generate a dataset to be queried with the DP program, these randomly generated specifications and values work well to test a DP implementation.
 
 **Tester Program:**
@@ -35,9 +37,12 @@ This program is where the DP implementation is tested for correctness. The testi
 * Query the DP program N times where N is the length of the subset, calculate the noise value and store it in the noise list
 * Do the Kolmogorov-Smirnov test to obtain the P value for the given noise list
 * Add the P value to its respective operation’s P values list
+
 After these steps are taken for each iteration, the following are done:
+
 * Get the mean P value for each operation
 * Print the appropriate result regarding the correctness of the DP implementation depending on the mean P values of the 3 operations
+
 The interpretation of the 3 mean P values for the 3 operations are done in a way that provides the most information regarding the correctness of the DP implementation. If the mean P values for all operations are above “0.4”, the test concludes that the tested DP implementation is indeed a correct DP implementation. If the mean P values for all operations are above “0.2” and if at least one of the mean P values is below “0.4”, the program concludes that there is a minor error in the DP implementation, this minor error could be many things such as; the distribution from which the noise values are drawn could be the normal distribution instead of the Laplace distribution, the standard deviation is off with 50% room (the calculated standard deviation is either 0.5 of the actual standard deviation or 1.5 of the actual standard deviation) this could be caused by the sensitivity values for one or more operations being calculated slightly incorrectly (double or half the expected value) or the epsilon value being slightly off. If the program concludes that the DP implementation is incorrect then there is a baser issue than the ones described above, and the DP implementation is done very incorrectly, the sensitivity value for one or more of the operations could have been completely miscalculated or the distribution from which the noises are drawn could be the uniform distribution. The values used in the interpretation were chosen by observing the mean P values by running the tester program many times; this was done in the analysis program.
 
 **Analysis Program:**
@@ -46,5 +51,6 @@ The analysis program essentially tests the correctness of the tester program. It
 * “epsilon”: The epsilon value can be specified in the analysis program but defaults to “1.0” in the tester program if not specified
 * “low_num_entries”: The minimum number of rows in the generated dataset
 * “high_num_entries”: The maximum number of rows in the generated dataset
+  
 The tester program is run “iterations” number of times and the mean P values returned by the tester program are added to the list of mean P values for the respective operations.
 This program allows us the monitor the mean P values returned by the tester program with the correct and many different incorrect DP implementations to determine the optimal cutoff points for interpretation and classification of the DP program by observing the mean P values. 
